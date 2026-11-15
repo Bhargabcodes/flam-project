@@ -39,7 +39,8 @@ export const StepItem: React.FC<Props> = ({ step, index, isChecked, onToggle }) 
     <li className={`step-item ${isChecked ? 'step-completed' : ''}`} style={{display: 'flex', gap: '16px', marginBottom: '24px', opacity: isChecked ? 0.5 : 1}}>
       <div className="step-badge" onClick={() => onToggle(step.id)} style={{
         width: '32px', height: '32px', borderRadius: '50%', 
-        background: isChecked ? 'var(--accent)' : '#eee',
+        background: isChecked ? 'var(--accent)' : 'var(--bg-elevated)',
+        color: isChecked ? 'white' : 'var(--text-primary)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer'
       }}>
         {isChecked ? '✓' : index + 1}
