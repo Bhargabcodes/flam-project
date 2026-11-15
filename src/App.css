@@ -1,0 +1,70 @@
+:root {
+  --bg: #121212;
+  --card-bg: #1e1e1e;
+  --text: #e0e0e0;
+  --primary: #bb86fc;
+  --secondary: #03dac6;
+  --error: #cf6679;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+.sticky-bar {
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 10;
+  padding: 10px;
+  border-bottom: 1px solid #444;
+}
+
+.ingredient-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.skeleton-view {
+  padding: 20px;
+}
+.skeleton-title { height: 30px; width: 60%; background: #333; margin-bottom: 10px; }
+.skeleton-bar { height: 20px; width: 30%; background: #333; margin-bottom: 20px; }
+.skeleton-item { height: 40px; background: #333; margin-bottom: 10px; border-radius: 4px; }
+
+.ingredient-row.checked {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.step-item {
+  margin-bottom: 15px;
+}
