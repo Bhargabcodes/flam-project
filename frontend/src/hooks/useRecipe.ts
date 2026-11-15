@@ -60,8 +60,8 @@ export function useRecipe() {
 
     try {
       const url = options.mock 
-        ? `http://localhost:3001/api/recipe?mock=${encodeURIComponent(options.mock)}`
-        : 'http://localhost:3001/api/recipe';
+        ? `/api/recipe?mock=${encodeURIComponent(options.mock)}`
+        : '/api/recipe';
 
       const response = await fetch(url, {
         method: 'POST',
