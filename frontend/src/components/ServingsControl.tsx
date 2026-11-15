@@ -3,7 +3,6 @@ import { Clock } from 'lucide-react';
 
 interface Props {
   currentServings: number;
-  baseServings: number;
   onUpdate: (newServings: number) => void;
   prepMinutes: number;
   cookMinutes: number;
@@ -11,7 +10,6 @@ interface Props {
 
 export const ServingsControl: React.FC<Props> = ({
   currentServings,
-  baseServings,
   onUpdate,
   prepMinutes,
   cookMinutes

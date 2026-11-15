@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Step } from '../../../shared/schema.ts';
-import { Timer, RotateCcw } from 'lucide-react';
+import { Timer } from 'lucide-react';
 
 interface Props {
   step: Step;
@@ -37,10 +37,10 @@ export const StepItem: React.FC<Props> = ({ step, index, isChecked, onToggle }) 
 
   return (
     <li className={`step-item ${isChecked ? 'step-completed' : ''}`} style={{display: 'flex', gap: '16px', marginBottom: '24px', opacity: isChecked ? 0.5 : 1}}>
-      <div className="step-badge" style={{
+      <div className="step-badge" onClick={() => onToggle(step.id)} style={{
         width: '32px', height: '32px', borderRadius: '50%', 
         background: isChecked ? 'var(--accent)' : '#eee',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer'
       }}>
         {isChecked ? '✓' : index + 1}
       </div>
