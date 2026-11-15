@@ -126,7 +126,6 @@ function App() {
                 </div>
                 <ServingsControl 
                   currentServings={servings} 
-                  baseServings={recipe.servings} 
                   onUpdate={setServings}
                   prepMinutes={recipe.prepMinutes}
                   cookMinutes={recipe.cookMinutes}
