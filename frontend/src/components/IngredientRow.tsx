@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Ingredient } from '../../shared/schema.ts';
+import type { Ingredient } from '../../../shared/schema.ts';
 import { formatQuantity } from '../utils/format';
 
 interface Props {

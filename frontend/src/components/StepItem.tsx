@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { Step } from '../../shared/schema.ts';
+import type { Step } from '../../../shared/schema.ts';
 
 interface Props {
   step: Step;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Recipe } from '../../shared/schema.ts';
+import type { Recipe } from '../../../shared/schema.ts';
 import { StepItem } from './StepItem';
 
 interface Props {

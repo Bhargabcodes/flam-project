@@ -1,17 +1,30 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { RecipeSchema, parseRecipeLeniently } from '../shared/schema.ts';
 
 dotenv.config();
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from the 'frontend/dist' folder
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const MODEL_NAME = 'gemini-3.5-flash';
+const MODEL_NAME = 'gemini-flash-lite-latest';
+
+// ... (keep the rest of the file)
+// Add the catch-all route at the end:
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+// });
 
 // Clean markdown code blocks from model response
 function cleanJsonResponse(text) {
@@ -103,7 +116,7 @@ CRITICAL REQUIREMENTS:
 }
 
 // Call Gemini with timeout support
-async function callGemini(promptText, timeoutMs = 25000) {
+async function callGemini(promptText, timeoutMs = 60000) {
   const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
   const fetchPromise = model.generateContent(promptText);
@@ -240,7 +253,8 @@ app.post('/api/recipe', async (req, res) => {
     while (attempts < maxAttempts) {
       attempts++;
       try {
-        rawText = await callGemini(prompt, 25000);
+        rawText = await callGemini(prompt, 60000); // Increased to 60 seconds
+
         const cleaned = cleanJsonResponse(rawText);
 
         let parsedJson;
@@ -309,6 +323,12 @@ Please fix this issue and return strictly valid, parsable JSON adhering to the s
       error: `Recipe generation failed: ${message}`
     });
   }
+});
+
+// Handle React routing (serve index.html for all non-API requests)
+// Using a regex to catch all routes that do not start with /api
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3001;

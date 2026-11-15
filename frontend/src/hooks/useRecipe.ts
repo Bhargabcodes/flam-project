@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
-import type { Recipe } from '../../shared/schema.ts';
-import { parseRecipeLeniently } from '../../shared/schema.ts';
+import type { Recipe } from '../../../shared/schema.ts';
+import { parseRecipeLeniently } from '../../../shared/schema.ts';
 
 interface FetchOptions {
   ingredients?: string;
@@ -56,7 +56,7 @@ export function useRecipe() {
       if (activeRequestIdRef.current === currentRequestId) {
         controller.abort();
       }
-    }, 30000);
+    }, 65000); // Increased to 65 seconds to match server timeout
 
     try {
       const url = options.mock 
