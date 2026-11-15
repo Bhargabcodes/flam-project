@@ -21,6 +21,8 @@ export const StepSchema = z.object({
 
 export const RecipeSchema = z.object({
   title: z.string().min(1, 'Title cannot be empty'),
+  description: z.string().optional().default('A delicious recipe crafted from your ingredients.'),
+  tags: z.array(z.string()).optional().default([]),
   servings: z.number().min(1).default(2),
   prepMinutes: z.number().min(0).default(0),
   cookMinutes: z.number().min(0).default(0),
@@ -98,6 +100,8 @@ export function parseRecipeLeniently(raw: any): Recipe | { error: string } {
 
   const recipeCandidate = {
     title: typeof raw.title === 'string' && raw.title.trim() ? raw.title : 'Quick Fridge Recipe',
+    description: typeof raw.description === 'string' ? raw.description : 'A delicious recipe crafted from your ingredients.',
+    tags: Array.isArray(raw.tags) ? raw.tags : [],
     servings: typeof raw.servings === 'number' && raw.servings > 0 ? raw.servings : 2,
     prepMinutes: typeof raw.prepMinutes === 'number' ? raw.prepMinutes : 10,
     cookMinutes: typeof raw.cookMinutes === 'number' ? raw.cookMinutes : 15,

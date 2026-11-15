@@ -18,24 +18,10 @@ export const StepList: React.FC<Props> = ({ steps }) => {
     });
   };
 
-  const progress = Math.round((checkedSteps.size / steps.length) * 100);
-
   return (
-    <section className="recipe-section steps-card card">
-      <div className="section-title-row">
-        <h3>
-          <span className="icon">👨‍🍳</span> Instructions
-        </h3>
-        <span className="progress-text">
-          {checkedSteps.size}/{steps.length} steps done ({progress}%)
-        </span>
-      </div>
-
-      <div className="progress-bar-wrap">
-        <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
-      </div>
-
-      <ol className="step-list">
+    <section className="card">
+      <h3>Instructions</h3>
+      <div className="step-list">
         {steps.map((step, index) => (
           <StepItem
             key={step.id}
@@ -45,7 +31,7 @@ export const StepList: React.FC<Props> = ({ steps }) => {
             onToggle={toggleStep}
           />
         ))}
-      </ol>
+      </div>
     </section>
   );
 };

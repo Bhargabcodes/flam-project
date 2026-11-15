@@ -24,12 +24,10 @@ export const IngredientList: React.FC<Props> = ({
   const checkedCount = ingredients.filter((ing) => checkedIds.has(ing.id)).length;
 
   return (
-    <section className="recipe-section ingredients-card card">
-      <div className="section-title-row">
-        <h3>
-          <span className="icon">🥑</span> Ingredients
-        </h3>
-        <span className="count-badge">
+    <section className="card">
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
+        <h3>Ingredients</h3>
+        <span style={{fontSize: '13px', background: 'var(--bg-elevated)', padding: '6px 12px', borderRadius: '8px', fontWeight: 600}}>
           {checkedCount}/{ingredients.length} gathered
         </span>
       </div>

@@ -275,12 +275,13 @@ body {
 
 /* Ingredients List & Swap Popover */
 .gathered-pill {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   background: var(--accent-soft);
   color: var(--accent);
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 999px;
+  border: 1px solid var(--accent);
 }
 
 .ingredient-list {
@@ -341,6 +342,7 @@ body {
 .ingredient-row .text {
   flex: 1;
   font-size: 15px;
+  color: var(--text-primary);
 }
 
 .btn-swap-toggle {
@@ -421,7 +423,7 @@ body {
   border: 1px solid var(--border-subtle);
   color: var(--text-primary);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -442,7 +444,7 @@ body {
 
 .step-content p {
   margin: 0 0 10px;
-  font-size: 15.5px;
+  font-size: 16px;
   line-height: 1.65;
   color: var(--text-primary);
 }

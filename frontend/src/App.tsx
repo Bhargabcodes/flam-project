@@ -115,7 +115,15 @@ function App() {
           {recipe && (
             <div className="recipe-view">
               <div className="recipe-header">
-                <h2>{recipe.title}</h2>
+                <div>
+                  <h2>{recipe.title}</h2>
+                  <p style={{marginTop: '8px', marginBottom: '16px', color: 'var(--text-secondary)'}}>{recipe.description}</p>
+                  <div style={{display: 'flex', gap: '8px', marginBottom: '16px'}}>
+                    {recipe.tags.map(tag => (
+                      <span key={tag} className="gathered-pill">{tag}</span>
+                    ))}
+                  </div>
+                </div>
                 <ServingsControl 
                   currentServings={servings} 
                   baseServings={recipe.servings} 

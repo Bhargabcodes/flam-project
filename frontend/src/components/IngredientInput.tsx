@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Sparkle, X, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Props {
   value: string;
@@ -10,22 +11,9 @@ interface Props {
 }
 
 const PRESETS = [
-  {
-    label: '🥬 Fresh Salad',
-    ingredients: 'Lettuce, cherry tomatoes, cucumber, red onion, olive oil, cider vinegar, salt, pepper'
-  },
-  {
-    label: '🍳 Quick Breakfast',
-    ingredients: '3 eggs, 1 cup spinach, 2 slices stale sourdough bread, cheddar cheese, butter, black pepper'
-  },
-  {
-    label: '🍜 Fridge Stir-Fry',
-    ingredients: 'Leftover white rice, 2 carrots, frozen peas, soy sauce, sesame oil, garlic, 1 egg'
-  },
-  {
-    label: '🚫 Non-Food (Test)',
-    ingredients: 'car keys, plastic lego brick, AA battery, cardboard box'
-  }
+  { label: '🥗 Fresh Salad', ingredients: 'Lettuce, cherry tomatoes, cucumber, red onion, olive oil, cider vinegar, salt, pepper' },
+  { label: '🍳 Quick Breakfast', ingredients: '3 eggs, 1 cup spinach, 2 slices stale sourdough bread, cheddar cheese, butter, black pepper' },
+  { label: '🥡 Fridge Stir-Fry', ingredients: 'Leftover white rice, 2 carrots, frozen peas, soy sauce, sesame oil, garlic, 1 egg' }
 ];
 
 export const IngredientInput: React.FC<Props> = ({
@@ -36,29 +24,53 @@ export const IngredientInput: React.FC<Props> = ({
   selectedMock,
   onMockChange
 }) => {
+  const [showDevOptions, setShowDevOptions] = useState(false);
+  // Split on both commas and newlines to match helper text
+  const chips = value.split(/[\n,]+/).map(i => i.trim()).filter(Boolean);
+
+  const removeChip = (index: number) => {
+    const newChips = [...chips];
+    newChips.splice(index, 1);
+    onChange(newChips.join(', '));
+  };
+
   return (
     <section className="input-section card">
-      <div className="section-header">
-        <label htmlFor="ingredient-textarea" className="input-label">
-          <span className="icon">🧊</span> What's in your fridge & pantry?
+      <div className="section-header" style={{ marginBottom: '14px' }}>
+        <label htmlFor="ingredient-textarea" style={{ fontSize: '20px', fontWeight: 700, display: 'block' }}>
+          What’s in your fridge?
         </label>
-        <span className="character-hint">List whatever leftovers or basics you have</span>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: '4px 0 0' }}>
+          Separate ingredients with commas or new lines
+        </p>
       </div>
 
       <form onSubmit={onSubmit} className="ingredient-form">
         <textarea
           id="ingredient-textarea"
-          rows={3}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="e.g. 2 eggs, handful of spinach, half an onion, cold cooked rice, soy sauce..."
+          placeholder="e.g. 3 eggs, spinach, sourdough bread, cheddar..."
           disabled={loading}
-          className="ingredient-textarea"
+          style={{ marginBottom: '12px' }}
         />
 
-        <div className="presets-bar">
-          <span className="presets-title">Quick presets:</span>
-          <div className="preset-chips">
+        {chips.length > 0 && (
+          <div className="chips-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
+            {chips.map((chip, index) => (
+              <span key={index} className="ingredient-chip">
+                {chip}
+                <X size={14} style={{ cursor: 'pointer', opacity: 0.7 }} onClick={() => removeChip(index)} />
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="presets-bar" style={{ marginBottom: '20px' }}>
+          <p style={{ marginBottom: '8px', fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 500 }}>
+            Try an example:
+          </p>
+          <div className="preset-chips" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {PRESETS.map((preset) => (
               <button
                 key={preset.label}
@@ -73,43 +85,29 @@ export const IngredientInput: React.FC<Props> = ({
           </div>
         </div>
 
-        <div className="form-actions">
-          <div className="mock-selector-wrap">
-            <label htmlFor="mock-mode-select" className="mock-label">
-              🧪 Failure Test Mode:
-            </label>
+        <button type="submit" disabled={loading || !value.trim()} className="btn-filled">
+          <Sparkle size={18} /> {loading ? 'Generating Recipe...' : 'Generate Recipe'}
+        </button>
+
+        <div className="dev-options" style={{ marginTop: '20px', borderTop: '1px solid var(--border-subtle)', paddingTop: '12px' }}>
+          <button
+            type="button"
+            onClick={() => setShowDevOptions(!showDevOptions)}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', padding: 0 }}
+          >
+            Developer options {showDevOptions ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          </button>
+          {showDevOptions && (
             <select
-              id="mock-mode-select"
               value={selectedMock}
               onChange={(e) => onMockChange(e.target.value)}
-              disabled={loading}
-              className="mock-select"
+              style={{ marginTop: '8px', width: '100%', padding: '8px', borderRadius: '8px', background: 'var(--bg-input)', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)' }}
             >
-              <option value="">🟢 Live AI (Gemini)</option>
-              <option value="malformed">🔴 Malformed JSON</option>
-              <option value="wrong_shape">🔴 Wrong Schema / Shape</option>
-              <option value="non_food">🔴 Non-Food Input Rejected</option>
-              <option value="slow">🟡 Slow Response (8s Warning)</option>
-              <option value="rate_limit">🔴 429 Rate Limit Error</option>
-              <option value="server_error">🔴 500 AI Server Error</option>
-              <option value="partial_garbage">🟡 Partial Garbage (Lenient Zod)</option>
+              <option value="">Live AI (Gemini)</option>
+              <option value="malformed">Malformed JSON</option>
+              <option value="non_food">Non-Food Input Rejected</option>
             </select>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading || !value.trim()}
-            className="btn btn-primary generate-btn"
-          >
-            {loading ? (
-              <>
-                <span className="spinner" />
-                Cooking up recipe...
-              </>
-            ) : (
-              '✨ Generate Recipe'
-            )}
-          </button>
+          )}
         </div>
       </form>
     </section>

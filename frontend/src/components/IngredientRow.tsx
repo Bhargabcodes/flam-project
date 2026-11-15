@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { Ingredient } from '../../../shared/schema.ts';
 import { formatQuantity } from '../utils/format';
+import { Repeat, RotateCcw } from 'lucide-react';
 
 interface Props {
   ingredient: Ingredient;
@@ -29,81 +30,64 @@ export const IngredientRow: React.FC<Props> = ({
   const hasSwaps = ingredient.swaps && ingredient.swaps.length > 0;
 
   return (
-    <li className={`ingredient-row ${isChecked ? 'checked' : ''} ${activeSwapName ? 'swapped' : ''}`}>
-      <label className="checkbox-container">
-        <input
-          type="checkbox"
-          checked={isChecked}
-          onChange={() => onToggleCheck(ingredient.id)}
-          aria-label={`Check off ${currentName}`}
-        />
-        <span className="checkmark" />
-      </label>
-
-      <div className="ingredient-info">
-        <span className="ingredient-text">
-          <strong className="ingredient-qty">{formattedQty}</strong>{' '}
-          <span className="ingredient-unit">{ingredient.unit}</span>{' '}
-          <span className="ingredient-name">{currentName}</span>
-        </span>
-
+    <li className={`ingredient-row ${isChecked ? 'checked' : ''}`} onClick={() => onToggleCheck(ingredient.id)}>
+      <div className={`checkbox ${isChecked ? 'checked' : ''}`} />
+      
+      <div className="text">
+        <strong>{formattedQty}</strong> {currentName}
         {activeSwapName && (
-          <span className="swap-badge">
-            Replaced: <s>{ingredient.name}</s>
-            <button
-              type="button"
-              className="undo-swap-btn"
-              onClick={() => onUndoSwap(ingredient.id)}
-              title="Undo swap"
-            >
-              ↺ Undo
-            </button>
+          <span style={{ fontSize: '12px', marginLeft: '8px', color: 'var(--accent)', fontWeight: 600 }}>
+            (Swapped)
           </span>
         )}
       </div>
 
       {hasSwaps && !activeSwapName && (
-        <div className="swap-action-wrap">
-          <button
-            type="button"
-            className="btn-swap-toggle"
-            onClick={() => setShowSwapDropdown(!showSwapDropdown)}
-            title="Substitute this ingredient"
-          >
-            ⇄ Swap
-          </button>
+        <button
+          type="button"
+          title="Swap ingredient"
+          className="btn-swap-toggle"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowSwapDropdown(!showSwapDropdown);
+          }}
+        >
+          <Repeat size={15} />
+        </button>
+      )}
 
-          {showSwapDropdown && (
-            <div className="swap-dropdown-popover">
-              <div className="swap-dropdown-header">
-                <span>Substitutes for {ingredient.name}:</span>
-                <button
-                  type="button"
-                  className="close-popover-btn"
-                  onClick={() => setShowSwapDropdown(false)}
-                >
-                  ✕
-                </button>
-              </div>
-              <ul className="swap-options-list">
-                {ingredient.swaps?.map((swap) => (
-                  <li key={swap.name} className="swap-option-item">
-                    <button
-                      type="button"
-                      className="swap-option-btn"
-                      onClick={() => {
-                        onSwap(ingredient.id, swap.name);
-                        setShowSwapDropdown(false);
-                      }}
-                    >
-                      <span className="swap-name">{swap.name}</span>
-                      {swap.note && <span className="swap-note">({swap.note})</span>}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+      {activeSwapName && (
+        <button
+          type="button"
+          title="Undo swap"
+          className="btn-swap-toggle"
+          onClick={(e) => {
+            e.stopPropagation();
+            onUndoSwap(ingredient.id);
+          }}
+        >
+          <RotateCcw size={15} />
+        </button>
+      )}
+
+      {showSwapDropdown && hasSwaps && (
+        <div className="swap-popover" onClick={(e) => e.stopPropagation()}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', padding: '4px 10px', fontWeight: 600 }}>
+            SWAP WITH:
+          </div>
+          {ingredient.swaps!.map((swapOption, idx) => (
+            <button
+              key={idx}
+              type="button"
+              className="swap-option"
+              onClick={() => {
+                onSwap(ingredient.id, swapOption.name);
+                setShowSwapDropdown(false);
+              }}
+            >
+              {swapOption.name}
+            </button>
+          ))}
         </div>
       )}
     </li>
