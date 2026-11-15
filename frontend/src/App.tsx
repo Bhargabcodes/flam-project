@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import { useRecipe } from './hooks/useRecipe';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { useTheme } from './hooks/useTheme';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { LoadingSkeleton } from './components/LoadingSkeleton';
 import { IngredientInput } from './components/IngredientInput';
@@ -14,6 +15,7 @@ function App() {
   const [ingredients, setIngredients] = useState('');
   const [mock, setMock] = useState('');
   const { recipe, setRecipe, loading, error, isSlow, fetchRecipe, retry, refineRecipe, clearError } = useRecipe();
+  const { theme, toggleTheme } = useTheme();
   
   // State for check-offs and swaps (persisted in local storage)
   const [checkedIngredients, setCheckedIngredients] = useLocalStorage<string[]>('checkedIngredients', []);
@@ -56,10 +58,35 @@ function App() {
   return (
     <div className="App">
       <header className="app-header">
-        <h1>Fridge to Recipe</h1>
+        <div className="logo-area">
+          <h1>Fridge to Recipe</h1>
+          <p className="tagline">Turn your leftovers into delicious meals using AI.</p>
+        </div>
+        <button className="theme-toggle" onClick={toggleTheme}>
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
       </header>
 
       <main className="app-main">
+        {!recipe && (
+          <section className="features-section" style={{marginBottom: '32px'}}>
+            <div className="feature-grid">
+              <div className="feature-card card" style={{padding: '16px', margin: 0}}>
+                <strong>✨ Smart Generation</strong>
+                <p style={{fontSize: '14px', margin: '4px 0 0 0'}}>Gemini AI creates custom recipes from your ingredients.</p>
+              </div>
+              <div className="feature-card card" style={{padding: '16px', margin: 0}}>
+                <strong>⚡ Dynamic Scaling</strong>
+                <p style={{fontSize: '14px', margin: '4px 0 0 0'}}>Automatically adjust serving sizes instantly.</p>
+              </div>
+              <div className="feature-card card" style={{padding: '16px', margin: 0}}>
+                <strong>🥘 Easy Swapping</strong>
+                <p style={{fontSize: '14px', margin: '4px 0 0 0'}}>Swap ingredients you don't have for better alternatives.</p>
+              </div>
+            </div>
+          </section>
+        )}
+
         <IngredientInput
           value={ingredients}
           onChange={setIngredients}
@@ -87,28 +114,33 @@ function App() {
         <ErrorBoundary onReset={() => setRecipe(null)}>
           {recipe && (
             <div className="recipe-view">
-              <h2>{recipe.title}</h2>
-              <ServingsControl 
-                currentServings={servings} 
-                baseServings={recipe.servings} 
-                onUpdate={setServings}
-                prepMinutes={recipe.prepMinutes}
-                cookMinutes={recipe.cookMinutes}
-              />
+              <div className="recipe-header">
+                <h2>{recipe.title}</h2>
+                <ServingsControl 
+                  currentServings={servings} 
+                  baseServings={recipe.servings} 
+                  onUpdate={setServings}
+                  prepMinutes={recipe.prepMinutes}
+                  cookMinutes={recipe.cookMinutes}
+                />
+              </div>
               
-              <IngredientList 
-                ingredients={recipe.ingredients} 
-                servingsMultiplier={servingsMultiplier}
-                checkedIds={new Set(checkedIngredients)}
-                onToggleCheck={handleToggleIngredient}
-                swaps={swaps}
-                onSwap={handleSwap}
-                onUndoSwap={handleUndoSwap}
-              />
+              <aside className="recipe-sidebar">
+                <IngredientList 
+                  ingredients={recipe.ingredients} 
+                  servingsMultiplier={servingsMultiplier}
+                  checkedIds={new Set(checkedIngredients)}
+                  onToggleCheck={handleToggleIngredient}
+                  swaps={swaps}
+                  onSwap={handleSwap}
+                  onUndoSwap={handleUndoSwap}
+                />
+                <RefinementInput onRefine={refineRecipe} loading={loading} />
+              </aside>
               
-              <RefinementInput onRefine={refineRecipe} loading={loading} />
-              
-              <StepList steps={recipe.steps} />
+              <div className="steps-container">
+                <StepList steps={recipe.steps} />
+              </div>
             </div>
           )}
         </ErrorBoundary>
