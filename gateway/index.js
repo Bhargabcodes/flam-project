@@ -17,6 +17,9 @@ app.use(express.json());
 // Serve static files from the 'frontend/dist' folder
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
+// Ensure CORS allows requests from any origin or the specific production URL if needed
+app.use(cors()); // Note: app.use(cors()) allows all origins by default.
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const MODEL_NAME = 'gemini-flash-lite-latest';
 
